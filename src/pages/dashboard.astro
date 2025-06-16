@@ -1,63 +1,22 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import Layout from "@/layouts/Layout.astro";
+import Sidebar from "../components/Sidebar.tsx";
+import UploadArea from "../components/UploadArea.tsx";
+import UploadMenu from "../components/UploadMenu.tsx";
 ---
 
-<Layout title="Dashboard">
-  <div class="min-h-screen bg-gray-50 p-8">
-    <div class="max-w-4xl mx-auto">
-      <h1 class="text-3xl font-bold text-gray-900 mb-8">Dashboard</h1>
-      
-      <div class="bg-white rounded-lg shadow p-6">
-        <h2 class="text-xl font-semibold mb-4">¡Bienvenido!</h2>
-        <p class="text-gray-600 mb-4">Has iniciado sesión correctamente.</p>
-        
-        <div id="user-info" class="bg-blue-50 p-4 rounded-lg mb-4">
-          <p class="text-sm text-gray-600">Cargando información del usuario...</p>
-        </div>
-        
-        <button 
-          id="logout-btn"
-          class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors"
-        >
-          Cerrar Sesión
-        </button>
-      </div>
-    </div>
-  </div>
+<Layout>
+   <div class="min-h-screen bg-gray-50">
+      <Sidebar />
 
-  <script>
-    import { supabase } from '../lib/supabase.js';
-    
-    // Verificar si hay usuario logueado
-    supabase.auth.getUser().then(({ data: { user }, error }) => {
-      const userInfo = document.getElementById('user-info');
-      
-      if (error || !user) {
-        // No hay usuario, redirigir al login
-        window.location.href = '/login';
-        return;
-      }
-      
-      // Mostrar info del usuario
-      if (userInfo) {
-        userInfo.innerHTML = `
-          <h3 class="font-semibold text-gray-800">Información del Usuario:</h3>
-          <p><strong>Email:</strong> ${user.email}</p>
-          <p><strong>ID:</strong> ${user.id}</p>
-          <p><strong>Último login:</strong> ${user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString() : 'No disponible'}</p>
-        `;
-      }
-    });
-    
-    // Logout
-    const logoutBtn = document.getElementById('logout-btn');
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', async () => {
-        const { error } = await supabase.auth.signOut();
-        if (!error) {
-          window.location.href = '/login';
-        }
-      });
-    }
-  </script>
+      {/* Main Content */}
+      <div class="pl-16 transition-all duration-300">
+        <div class="flex">
+          <UploadArea />
+        </div>
+      </div>
+
+      {/* Right Menu */}
+      <UploadMenu />
+    </div>
 </Layout>
