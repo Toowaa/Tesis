@@ -3,9 +3,10 @@
 import type React from "react"
 import { useState } from "react"
 import { Button } from "@/components/ui/Button"
-import { Card } from "@/components/ui/Card"
+
 import { cn } from "@/lib/utils"
 import { Upload, X, FileImage } from "lucide-react"
+import { Card } from "./ui/Card"
 
 export default function UploadArea() {
   const [isDragOver, setIsDragOver] = useState(false)

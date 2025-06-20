@@ -203,15 +203,7 @@ export default function GoogleLoginForm() {
             </span>
           </button>
 
-          <div className="text-center text-sm text-gray-600">
-            ¿No tienes una cuenta?{" "}
-            <button 
-              type="button"
-              className="text-blue-600 hover:text-blue-800 font-medium"
-            >
-              Regístrate aquí
-            </button>
-          </div>
+         
         </div>
       </div>
     </div>

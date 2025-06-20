@@ -7,16 +7,14 @@ import UploadMenu from "../components/UploadMenu.tsx";
 
 <Layout>
    <div class="min-h-screen bg-gray-50">
-      <Sidebar />
+      <Sidebar client:load />
 
-      {/* Main Content */}
       <div class="pl-16 transition-all duration-300">
         <div class="flex">
-          <UploadArea />
+          <UploadArea client:load />
         </div>
       </div>
 
-      {/* Right Menu */}
-      <UploadMenu />
+      <UploadMenu client:load />
     </div>
 </Layout>
