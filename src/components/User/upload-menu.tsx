@@ -3,9 +3,9 @@
 import type React from "react"
 
 import { useRef } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
+import { Button } from "@/components/ui/Button"
+import { Card, CardContent } from "@/components/ui/Card"
+import { Separator } from "@/components/ui/Separator"
 import { Upload, Camera } from "lucide-react"
 
 interface UploadMenuProps {

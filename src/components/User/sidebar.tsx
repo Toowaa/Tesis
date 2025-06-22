@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/Button"
 import { cn } from "@/lib/utils"
 import { Home, Upload, ImageIcon, ChevronLeft, ChevronRight, FolderOpen, Heart, Trash2 } from "lucide-react"
 import UserProfileMenu from "./user-profile-menu"

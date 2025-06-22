@@ -7,7 +7,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const { url, cookies, redirect } = context
 
   // Rutas que requieren autenticación
-  const protectedRoutes = ["/dashboard", "/profile", "/upload"]
+  const protectedRoutes = ["/dashboard", "/profile", "/upload", "/settings"]
 
   // Rutas que solo pueden acceder usuarios no autenticados
   const authRoutes = ["/login", "/register", "/sign"]
@@ -23,6 +23,15 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const accessToken = cookies.get("sb-access-token")?.value
   const refreshToken = cookies.get("sb-refresh-token")?.value
 
+  // Debug logs
+  console.log("🔍 Middleware Debug:", {
+    pathname: url.pathname,
+    hasAccessToken: !!accessToken,
+    hasRefreshToken: !!refreshToken,
+    isProtectedRoute,
+    isAuthRoute
+  })
+
   let user = null
 
   if (accessToken && refreshToken) {
@@ -37,6 +46,29 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
       if (!error && authUser) {
         user = authUser
+        
+        // Actualizar cookies si hay una nueva sesión
+        const { data: session } = await supabase.auth.getSession()
+        if (session.session) {
+          cookies.set("sb-access-token", session.session.access_token, {
+            path: "/",
+            maxAge: 60 * 60 * 24 * 7, // 7 días
+            sameSite: "lax",
+            secure: import.meta.env.PROD,
+            httpOnly: false
+          })
+          cookies.set("sb-refresh-token", session.session.refresh_token, {
+            path: "/",
+            maxAge: 60 * 60 * 24 * 30, // 30 días
+            sameSite: "lax",
+            secure: import.meta.env.PROD,
+            httpOnly: false
+          })
+        }
+      } else {
+        // Si hay error, limpiar cookies
+        cookies.delete("sb-access-token", { path: "/" })
+        cookies.delete("sb-refresh-token", { path: "/" })
       }
     } catch (error) {
       console.error("Error validating session:", error)

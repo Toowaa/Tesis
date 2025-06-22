@@ -1,8 +1,6 @@
 "use client"
-
 import type React from "react"
-
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "./ui/Button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/Card"
 import { Input } from "./ui/Input"
@@ -25,25 +23,72 @@ export default function GoogleLoginForm({ error }: Props) {
     password: "",
   })
 
+  // Manejar tokens en el fragment URL (para implicit flow como fallback)
+  useEffect(() => {
+    const handleHashChange = async () => {
+      const hash = window.location.hash
+      if (hash.includes('access_token')) {
+        const params = new URLSearchParams(hash.substring(1))
+        const accessToken = params.get('access_token')
+        const refreshToken = params.get('refresh_token')
+        
+        if (accessToken && refreshToken) {
+          try {
+            // Enviar tokens al servidor
+            const response = await fetch('/api/auth/set-session', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                access_token: accessToken,
+                refresh_token: refreshToken,
+              }),
+            })
+
+            if (response.ok) {
+              // Limpiar el hash y redirigir
+              window.history.replaceState({}, document.title, window.location.pathname)
+              window.location.href = "/dashboard"
+            } else {
+              setAuthError("Error al establecer la sesión")
+            }
+          } catch (err) {
+            setAuthError("Error al procesar la autenticación")
+          }
+        }
+      }
+    }
+
+    // Ejecutar al cargar y cuando cambie el hash
+    handleHashChange()
+    window.addEventListener('hashchange', handleHashChange)
+    
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
+
   const handleGoogleLogin = async () => {
     try {
       setLoading(true)
       setAuthError(null)
-
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
         },
       })
-
+      
       if (error) {
         setAuthError(error.message)
+        setLoading(false)
       }
-      // No redirigir aquí, OAuth manejará la redirección
     } catch (err) {
       setAuthError("Error al iniciar sesión con Google")
-    } finally {
       setLoading(false)
     }
   }
@@ -53,23 +98,38 @@ export default function GoogleLoginForm({ error }: Props) {
     try {
       setLoading(true)
       setAuthError(null)
-
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
       })
-
+      
       if (error) {
         setAuthError(error.message)
-      } else if (data.session) {
-        // Establecer cookies manualmente para que el middleware las detecte
-        document.cookie = `sb-access-token=${data.session.access_token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`
-        document.cookie = `sb-refresh-token=${data.session.refresh_token}; path=/; max-age=${60 * 60 * 24 * 30}; SameSite=Lax`
+        return
+      }
+      
+      if (data.session) {
+        const response = await fetch('/api/auth/set-session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            access_token: data.session.access_token,
+            refresh_token: data.session.refresh_token,
+          }),
+        })
 
-        // Redirigir al dashboard
-        window.location.href = "/dashboard"
+        if (response.ok) {
+          window.location.href = "/dashboard"
+        } else {
+          const errorData = await response.json()
+          setAuthError(errorData.error || "Error al establecer la sesión")
+        }
       }
     } catch (err) {
+      console.error("Login error:", err)
       setAuthError("Error al iniciar sesión")
     } finally {
       setLoading(false)
@@ -86,15 +146,13 @@ export default function GoogleLoginForm({ error }: Props) {
           <CardTitle className="text-2xl font-bold text-gray-900">Bienvenido de vuelta</CardTitle>
           <CardDescription className="text-gray-600">Inicia sesión en tu cuenta para continuar</CardDescription>
         </CardHeader>
-
         <CardContent className="space-y-4">
           {authError && (
             <Alert variant="destructive">
               <AlertDescription>{authError}</AlertDescription>
             </Alert>
           )}
-
-          {/* Formulario de email y contraseña */}
+          
           <form onSubmit={handleEmailLogin} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-medium text-gray-700">
@@ -108,9 +166,9 @@ export default function GoogleLoginForm({ error }: Props) {
                 value={formData.email}
                 onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
                 required
+                disabled={loading}
               />
             </div>
-
             <div className="space-y-2">
               <Label htmlFor="password" className="text-sm font-medium text-gray-700">
                 Contraseña
@@ -124,6 +182,7 @@ export default function GoogleLoginForm({ error }: Props) {
                   value={formData.password}
                   onChange={(e) => setFormData((prev) => ({ ...prev, password: e.target.value }))}
                   required
+                  disabled={loading}
                 />
                 <Button
                   type="button"
@@ -131,6 +190,7 @@ export default function GoogleLoginForm({ error }: Props) {
                   size="sm"
                   className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                   onClick={() => setShowPassword(!showPassword)}
+                  disabled={loading}
                 >
                   {showPassword ? (
                     <EyeOff className="h-4 w-4 text-gray-400" />
@@ -140,29 +200,28 @@ export default function GoogleLoginForm({ error }: Props) {
                 </Button>
               </div>
             </div>
-
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <input
                   id="remember"
                   type="checkbox"
                   className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  disabled={loading}
                 />
                 <Label htmlFor="remember" className="text-sm text-gray-600">
                   Recordarme
                 </Label>
               </div>
-              <Button variant="link" className="px-0 text-sm text-blue-600 hover:text-blue-800">
+              <Button variant="link" className="px-0 text-sm text-blue-600 hover:text-blue-800" disabled={loading}>
                 ¿Olvidaste tu contraseña?
               </Button>
             </div>
-
             <Button type="submit" disabled={loading} className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white">
               {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Lock className="w-4 h-4 mr-2" />}
               {loading ? "Iniciando sesión..." : "Iniciar sesión"}
             </Button>
           </form>
-
+          
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <Separator className="w-full" />
@@ -171,7 +230,7 @@ export default function GoogleLoginForm({ error }: Props) {
               <span className="bg-white px-2 text-gray-500">O</span>
             </div>
           </div>
-
+          
           <Button
             onClick={handleGoogleLogin}
             disabled={loading}
@@ -197,10 +256,12 @@ export default function GoogleLoginForm({ error }: Props) {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                 />
               </svg>
-              <span className="text-gray-700 font-medium">Continuar con Google</span>
+              <span className="text-gray-700 font-medium">
+                {loading ? "Cargando..." : "Continuar con Google"}
+              </span>
             </div>
           </Button>
-
+          
           <div className="text-center text-sm text-gray-600">
             ¿No tienes una cuenta?{" "}
             <a href="/register" className="text-blue-600 hover:text-blue-800 font-medium">
