@@ -1,11 +1,34 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Layout from '../layouts/Layout.astro'
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// Si el usuario está autenticado, redirigir al dashboard
+export async function get({ locals }) {
+  if (locals.user) {
+    return Response.redirect(new URL('/dashboard', locals.url));
+  }
+}
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Bienvenido">
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div class="text-center space-y-6 p-8">
+      <h1 class="text-4xl font-bold text-gray-900">Bienvenido a PhotoApp</h1>
+      <p class="text-xl text-gray-600">La mejor manera de gestionar tus fotos</p>
+      
+      <div class="space-x-4">
+        <a 
+          href="/sign" 
+          class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+        >
+          Iniciar Sesión
+        </a>
+        <a 
+          href="/login" 
+          class="inline-block border border-blue-600 text-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-blue-50 transition-colors"
+        >
+          Registrarse
+        </a>
+      </div>
+    </div>
+  </div>
 </Layout>

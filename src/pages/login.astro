@@ -1,0 +1,10 @@
+---
+import Layout from '../layouts/Layout.astro'
+import GoogleLoginForm from '../components/GoogleLoginForm'
+
+const error = Astro.url.searchParams.get('error')
+---
+
+<Layout title="Iniciar Sesión">
+  <GoogleLoginForm client:load error={error} />
+</Layout>

@@ -1,0 +1,11 @@
+---
+import Layout from '../layouts/Layout.astro'
+import DashboardContent from '../components/DashboardContent'
+
+// El middleware ya validó la autenticación
+const user = Astro.locals.user
+---
+
+<Layout title="Dashboard">
+  <DashboardContent client:load user={user} />
+</Layout>
