@@ -1,0 +1,39 @@
+---
+import { supabase } from "../lib/supabase";
+
+// Obtener las cookies
+const accessToken = Astro.cookies.get("access_token")?.value;
+const refreshToken = Astro.cookies.get("refresh_token")?.value;
+
+if (!accessToken) {
+    return Astro.redirect('/login');
+}
+
+// Configurar la sesión en Supabase
+await supabase.auth.setSession({
+    access_token: accessToken,
+    refresh_token: refreshToken || ""
+});
+
+// Obtener el usuario
+const { data: { user }, error } = await supabase.auth.getUser();
+
+if (error || !user) {
+    console.error("Error getting user:", error);
+    return Astro.redirect('/login');
+}
+---
+
+<div class="text-3xl items-center p-8">
+    <h1 class="text-3xl font-bold">Dashboard</h1>
+    <p class="mt-4">Welcome to your dashboard!</p>
+    <p class="mt-2">Email: {user.email}</p>
+    <p class="mt-2">Name: {user.user_metadata?.full_name || 'No name provided'}</p>
+    
+    <!-- Botón de logout opcional -->
+    <form action="/api/auth/logout" method="post" class="mt-4">
+        <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded">
+            Logout
+        </button>
+    </form>
+</div>

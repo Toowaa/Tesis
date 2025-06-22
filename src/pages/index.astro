@@ -1,11 +1,286 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Layout from '../layouts/Layout.astro'
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="PhotoApp - Gestiona tus fotos como nunca antes">
+  <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <!-- Header/Navbar -->
+    <header class="relative z-10 px-6 py-4">
+      <nav class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <span class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">PhotoApp</span>
+        </div>
+        
+        <a 
+          href="/login" 
+          class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2.5 rounded-full font-medium hover:shadow-lg hover:scale-105 transition-all duration-200"
+        >
+          Iniciar Sesión
+        </a>
+      </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="px-6 py-20">
+      <div class="max-w-7xl mx-auto text-center">
+        <h1 class="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
+          Tus fotos,
+          <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            organizadas
+          </span>
+          <br>como nunca antes
+        </h1>
+        
+        <p class="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
+          Sube, organiza y comparte tus recuerdos más preciados con la plataforma más intuitiva y segura del mercado.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <a 
+            href="/login" 
+            class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:shadow-xl hover:scale-105 transition-all duration-200"
+          >
+            Comenzar Gratis
+          </a>
+          <button class="flex items-center space-x-2 text-gray-700 hover:text-blue-600 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span class="text-lg">Ver Demo</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="px-6 py-20 bg-white/50 backdrop-blur-sm">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            ¿Por qué elegir PhotoApp?
+          </h2>
+          <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+            Descubre las características que hacen de PhotoApp la mejor opción para gestionar tus fotos
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+          <!-- Feature 1 -->
+          <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
+            <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">Subida Instantánea</h3>
+            <p class="text-gray-600 leading-relaxed">
+              Arrastra y suelta tus fotos o tómalas directamente desde tu dispositivo. Subida rápida y segura en segundos.
+            </p>
+          </div>
+
+          <!-- Feature 2 -->
+          <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
+            <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">Organización Inteligente</h3>
+            <p class="text-gray-600 leading-relaxed">
+              Crea álbumes, etiqueta fotos y encuentra cualquier imagen en segundos con nuestra búsqueda avanzada.
+            </p>
+          </div>
+
+          <!-- Feature 3 -->
+          <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
+            <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center mb-6">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path>
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">Seguridad Total</h3>
+            <p class="text-gray-600 leading-relaxed">
+              Tus fotos están protegidas con encriptación de nivel empresarial. Privacidad y seguridad garantizadas.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="px-6 py-20">
+      <div class="max-w-7xl mx-auto">
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 text-white text-center">
+          <h2 class="text-3xl md:text-4xl font-bold mb-12">Únete a miles de usuarios satisfechos</h2>
+          
+          <div class="grid md:grid-cols-4 gap-8">
+            <div>
+              <div class="text-4xl md:text-5xl font-bold mb-2">50K+</div>
+              <div class="text-blue-100">Usuarios Activos</div>
+            </div>
+            <div>
+              <div class="text-4xl md:text-5xl font-bold mb-2">2M+</div>
+              <div class="text-blue-100">Fotos Subidas</div>
+            </div>
+            <div>
+              <div class="text-4xl md:text-5xl font-bold mb-2">99.9%</div>
+              <div class="text-blue-100">Tiempo Activo</div>
+            </div>
+            <div>
+              <div class="text-4xl md:text-5xl font-bold mb-2">24/7</div>
+              <div class="text-blue-100">Soporte</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="px-6 py-20 bg-gray-50">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            Lo que dicen nuestros usuarios
+          </h2>
+          <p class="text-xl text-gray-600">Historias reales de personas que aman PhotoApp</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+          <!-- Testimonial 1 -->
+          <div class="bg-white rounded-2xl p-8 shadow-lg">
+            <div class="flex items-center mb-6">
+              <img src="/placeholder.svg?height=60&width=60" alt="Usuario" class="w-12 h-12 rounded-full mr-4">
+              <div>
+                <div class="font-semibold text-gray-900">María González</div>
+                <div class="text-gray-600">Fotógrafa</div>
+              </div>
+            </div>
+            <p class="text-gray-700 leading-relaxed">
+              "PhotoApp cambió completamente mi flujo de trabajo. Ahora puedo organizar miles de fotos en minutos y encontrar exactamente lo que busco."
+            </p>
+            <div class="flex text-yellow-400 mt-4">
+              ★★★★★
+            </div>
+          </div>
+
+          <!-- Testimonial 2 -->
+          <div class="bg-white rounded-2xl p-8 shadow-lg">
+            <div class="flex items-center mb-6">
+              <img src="/placeholder.svg?height=60&width=60" alt="Usuario" class="w-12 h-12 rounded-full mr-4">
+              <div>
+                <div class="font-semibold text-gray-900">Carlos Ruiz</div>
+                <div class="text-gray-600">Padre de familia</div>
+              </div>
+            </div>
+            <p class="text-gray-700 leading-relaxed">
+              "Perfecto para guardar los recuerdos familiares. La interfaz es tan fácil que hasta mis hijos pueden usarla sin problemas."
+            </p>
+            <div class="flex text-yellow-400 mt-4">
+              ★★★★★
+            </div>
+          </div>
+
+          <!-- Testimonial 3 -->
+          <div class="bg-white rounded-2xl p-8 shadow-lg">
+            <div class="flex items-center mb-6">
+              <img src="/placeholder.svg?height=60&width=60" alt="Usuario" class="w-12 h-12 rounded-full mr-4">
+              <div>
+                <div class="font-semibold text-gray-900">Ana López</div>
+                <div class="text-gray-600">Diseñadora</div>
+              </div>
+            </div>
+            <p class="text-gray-700 leading-relaxed">
+              "La seguridad y privacidad que ofrece PhotoApp me da total tranquilidad. Mis proyectos están completamente protegidos."
+            </p>
+            <div class="flex text-yellow-400 mt-4">
+              ★★★★★
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="px-6 py-20">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          ¿Listo para comenzar?
+        </h2>
+        <p class="text-xl text-gray-600 mb-12">
+          Únete a PhotoApp hoy y descubre una nueva forma de gestionar tus fotos
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <a 
+            href="/login" 
+            class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-10 py-4 rounded-full text-lg font-semibold hover:shadow-xl hover:scale-105 transition-all duration-200"
+          >
+            Comenzar Gratis Ahora
+          </a>
+          <div class="text-sm text-gray-500">
+            Sin tarjeta de crédito • Configuración en 2 minutos
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white px-6 py-12">
+      <div class="max-w-7xl mx-auto">
+        <div class="grid md:grid-cols-4 gap-8">
+          <div>
+            <div class="flex items-center space-x-2 mb-4">
+              <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+              </div>
+              <span class="text-xl font-bold">PhotoApp</span>
+            </div>
+            <p class="text-gray-400">
+              La plataforma más intuitiva para gestionar y compartir tus fotos.
+            </p>
+          </div>
+          
+          <div>
+            <h3 class="font-semibold mb-4">Producto</h3>
+            <ul class="space-y-2 text-gray-400">
+              <li><a href="#" class="hover:text-white transition-colors">Características</a></li>
+              <li><a href="#" class="hover:text-white transition-colors">Precios</a></li>
+              <li><a href="#" class="hover:text-white transition-colors">API</a></li>
+            </ul>
+          </div>
+          
+          <div>
+            <h3 class="font-semibold mb-4">Soporte</h3>
+            <ul class="space-y-2 text-gray-400">
+              <li><a href="#" class="hover:text-white transition-colors">Centro de Ayuda</a></li>
+              <li><a href="#" class="hover:text-white transition-colors">Contacto</a></li>
+              <li><a href="#" class="hover:text-white transition-colors">Estado</a></li>
+            </ul>
+          </div>
+          
+          <div>
+            <h3 class="font-semibold mb-4">Legal</h3>
+            <ul class="space-y-2 text-gray-400">
+              <li><a href="#" class="hover:text-white transition-colors">Privacidad</a></li>
+              <li><a href="#" class="hover:text-white transition-colors">Términos</a></li>
+              <li><a href="#" class="hover:text-white transition-colors">Cookies</a></li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+          <p>&copy; 2024 PhotoApp. Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
 </Layout>
