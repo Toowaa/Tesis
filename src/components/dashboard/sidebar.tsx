@@ -128,7 +128,7 @@ export default function Sidebar({ className, user }: SidebarProps) {
             )}
           >
             <User className={cn("h-5 w-5", !isCollapsed && "mr-3")} />
-            {!isCollapsed && <span className="text-gray-500">{user?.email || "User"}</span>}
+            {!isCollapsed && <span className="text-gray-500">{user?.id || "User"}</span>}
 
           </Button>
         </div>

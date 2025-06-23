@@ -1,43 +1,44 @@
 ---
-import Layout from '@/layouts/Layout.astro';
-import { supabase } from '../lib/supabase.ts'
-import Sidebar from '@/components/dashboard/sidebar';
-import UploadArea from '@/components/dashboard/upload-area';
-import UploadMenu from '@/components/dashboard/upload-menu';
+import Layout from "@/layouts/Layout.astro";
+import { supabase } from "../lib/supabase.ts";
+import Sidebar from "@/components/dashboard/sidebar";
+import UploadArea from "@/components/dashboard/upload-area";
+import UploadMenu from "@/components/dashboard/upload-menu";
 
 // Obtener las cookies
 const accessToken = Astro.cookies.get("access_token")?.value;
 const refreshToken = Astro.cookies.get("refresh_token")?.value;
 
 if (!accessToken) {
-    return Astro.redirect('/login');
+  return Astro.redirect("/login");
 }
 
 // Configurar la sesión en Supabase
 await supabase.auth.setSession({
-    access_token: accessToken,
-    refresh_token: refreshToken || ""
+  access_token: accessToken,
+  refresh_token: refreshToken || "",
 });
 
 // Obtener el usuario
-const { data: { user }, error } = await supabase.auth.getUser();
+const {
+  data: { user },
+  error,
+} = await supabase.auth.getUser();
 
 if (error || !user) {
-    console.error("Error getting user:", error);
-    return Astro.redirect('/login');
+  console.error("Error getting user:", error);
+  return Astro.redirect("/login");
 }
 ---
 
 <Layout>
-   <div class="min-h-screen bg-gray-50">
-      <Sidebar client:idle user={user} />
-
-      <div class="pl-16 transition-all duration-300">
-        <div class="flex">
-          <UploadArea client:load />
-        </div>
+  <div class="min-h-screen bg-gray-50">
+    <Sidebar client:idle user={user} />
+    <div class="pl-16 transition-all duration-300">
+      <div class="flex">
+        <UploadArea client:load user={user} />
       </div>
-
-      <UploadMenu client:load />
     </div>
+    <UploadMenu client:load />
+  </div>
 </Layout>
