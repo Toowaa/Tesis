@@ -8,17 +8,19 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
 
   const validProviders = ["google"];
   
-  // CORREGIR: La lógica estaba invertida
   if (!provider || !validProviders.includes(provider)) {
     console.error("Invalid provider:", provider);
     return redirect("/login?error=invalid_provider");
   }
 
+  // Obtener la URL base desde las variables de entorno
+  const siteUrl = import.meta.env.PUBLIC_SITE_URL || "http://localhost:4321";
+
   try {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: provider as Provider,
       options: {
-        redirectTo: `${window.location.origin}/api/auth/callback`,
+        redirectTo: `${siteUrl}/api/auth/callback`,
       }
     });
 
@@ -27,7 +29,6 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
       return redirect("/login?error=login");
     }
 
-    // IMPORTANTE: Redirigir a la URL de OAuth que devuelve Supabase
     if (data.url) {
       return redirect(data.url);
     }
