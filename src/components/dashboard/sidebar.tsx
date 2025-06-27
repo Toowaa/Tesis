@@ -42,8 +42,8 @@ export default function Sidebar({ className, user }: SidebarProps) {
 
   const menuItems = [
     { icon: Home, label: "Inicio", active: false },
-    { icon: Upload, label: "Subir fotos", active: true },
-    { icon: ImageIcon, label: "Galería", active: false },
+    { icon: Upload, label: "Subir fotos", active: false },
+    { icon: ImageIcon, label: "Historial", active: true },
     { icon: FolderOpen, label: "Álbumes", active: false },
     { icon: Heart, label: "Favoritos", active: false },
     { icon: Trash2, label: "Papelera", active: false },
@@ -128,7 +128,7 @@ export default function Sidebar({ className, user }: SidebarProps) {
             )}
           >
             <User className={cn("h-5 w-5", !isCollapsed && "mr-3")} />
-            {!isCollapsed && <span className="text-gray-500">{user?.id || "User"}</span>}
+            {!isCollapsed && <span className="text-gray-500">{user?.email || "User"}</span>}
 
           </Button>
         </div>

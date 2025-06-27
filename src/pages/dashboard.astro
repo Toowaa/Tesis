@@ -4,6 +4,7 @@ import { supabase } from "../lib/supabase.ts";
 import Sidebar from "@/components/dashboard/sidebar";
 import UploadArea from "@/components/dashboard/upload-area";
 import UploadMenu from "@/components/dashboard/upload-menu";
+import Historial from "@/components/Historial";
 
 // Obtener las cookies
 const accessToken = Astro.cookies.get("access_token")?.value;
@@ -36,6 +37,7 @@ if (error || !user) {
     <Sidebar client:idle user={user} />
     <div class="pl-16 transition-all duration-300">
       <div class="flex">
+        <Historial client:load user={user} />
         <UploadArea client:load user={user} />
       </div>
     </div>
