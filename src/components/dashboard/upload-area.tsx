@@ -11,8 +11,8 @@ import {
   Loader2,
   AlertCircle,
   DollarSign,
-
   Recycle,
+  CheckCircle,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
@@ -32,6 +32,58 @@ interface UploadAreaProps {
   onFilesAdded?: (files: File[]) => void;
   user?: any;
 }
+
+// Componente del Popup
+interface PopupProps {
+  show: boolean;
+  onClose: () => void;
+  title: string;
+  message: string;
+  type: "success" | "error";
+}
+
+const Popup: React.FC<PopupProps> = ({ show, onClose, title, message, type }) => {
+  useEffect(() => {
+    if (show) {
+      const timer = setTimeout(() => {
+        onClose();
+      }, 3000); // Auto-cerrar después de 3 segundos
+
+      return () => clearTimeout(timer);
+    }
+  }, [show, onClose]);
+
+  if (!show) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl animate-in fade-in duration-200">
+        <div className="flex items-center space-x-3 mb-4">
+          {type === "success" ? (
+            <div className="p-2 bg-green-100 rounded-full">
+              <CheckCircle className="w-6 h-6 text-green-600" />
+            </div>
+          ) : (
+            <div className="p-2 bg-red-100 rounded-full">
+              <AlertCircle className="w-6 h-6 text-red-600" />
+            </div>
+          )}
+          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+        </div>
+        <p className="text-gray-600 mb-6">{message}</p>
+        <div className="flex justify-end space-x-3">
+          <Button
+            onClick={onClose}
+            variant={type === "success" ? "default" : "destructive"}
+            className="px-6"
+          >
+            Cerrar
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // Base de datos de precios para las categorías de tu modelo (Precios en Soles Peruanos)
 const PRICE_DATABASE: Record<
@@ -109,13 +161,25 @@ const PRICE_DATABASE: Record<
   },
 };
 
-export default function UploadArea({ onFilesAdded,user }: UploadAreaProps) {
+export default function UploadArea({ onFilesAdded, user }: UploadAreaProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [model, setModel] = useState<any>(null);
   const [modelStatus, setModelStatus] = useState<"loading" | "ready" | "error">(
     "loading"
   );
+  const [isUploading, setIsUploading] = useState(false);
+  const [popup, setPopup] = useState<{
+    show: boolean;
+    title: string;
+    message: string;
+    type: "success" | "error";
+  }>({
+    show: false,
+    title: "",
+    message: "",
+    type: "success",
+  });
 
   // URL del modelo de Teachable Machine
   const MODEL_URL = "https://teachablemachine.withgoogle.com/models/uQWGpZttU/";
@@ -355,13 +419,18 @@ export default function UploadArea({ onFilesAdded,user }: UploadAreaProps) {
 
   const SendToSupabase = async () => {
     try {
-    
-      if(!user?.id) {
-        console.error("No hay sesión activa o el usuario no está autenticado");
+      setIsUploading(true);
+
+      if (!user?.id) {
+        setPopup({
+          show: true,
+          title: "Error de autenticación",
+          message: "No hay sesión activa o el usuario no está autenticado",
+          type: "error",
+        });
+        setIsUploading(false);
         return;
       }
-
-     
 
       const dataToSend = uploadedFiles
         .filter((file) => file.prediction)
@@ -373,7 +442,13 @@ export default function UploadArea({ onFilesAdded,user }: UploadAreaProps) {
         }));
 
       if (dataToSend.length === 0) {
-        console.warn("No hay archivos procesados para enviar.");
+        setPopup({
+          show: true,
+          title: "No hay datos para enviar",
+          message: "No hay archivos procesados para enviar a la base de datos.",
+          type: "error",
+        });
+        setIsUploading(false);
         return;
       }
 
@@ -384,16 +459,54 @@ export default function UploadArea({ onFilesAdded,user }: UploadAreaProps) {
 
       if (error) {
         console.error("Error al enviar a Supabase:", error);
+        setPopup({
+          show: true,
+          title: "Error al guardar",
+          message: `Hubo un error al guardar los datos: ${error.message}`,
+          type: "error",
+        });
       } else {
         console.log("Datos enviados a Supabase:", data);
+        setPopup({
+          show: true,
+          title: "¡Datos guardados exitosamente!",
+          message: `Se guardaron ${dataToSend.length} productos en la base de datos correctamente.`,
+          type: "success",
+        });
+
+        // Programar el reload para después de mostrar el popup
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       }
     } catch (error) {
       console.error("Error al enviar a Supabase:", error);
+      setPopup({
+        show: true,
+        title: "Error inesperado",
+        message: "Ocurrió un error inesperado al intentar guardar los datos.",
+        type: "error",
+      });
+    } finally {
+      setIsUploading(false);
     }
+  };
+
+  const closePopup = () => {
+    setPopup((prev) => ({ ...prev, show: false }));
   };
 
   return (
     <div className="flex-1 p-6 space-y-6">
+      {/* Popup */}
+      <Popup
+        show={popup.show}
+        onClose={closePopup}
+        title={popup.title}
+        message={popup.message}
+        type={popup.type}
+      />
+
       {/* Estado del modelo */}
       <Card className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
         <div className="flex items-center justify-between">
@@ -489,17 +602,27 @@ export default function UploadArea({ onFilesAdded,user }: UploadAreaProps) {
         </div>
       </Card>
 
-      <Button
-        variant="outline"
-        className="mx-auto"
-        onClick={(e) => {
-          e.stopPropagation(); // 👈 detiene la burbuja del clic
-          SendToSupabase(); // 👈 ahora sí se ejecuta
-        }}
-      >
-        <Upload className="w-4 h-4 mr-2 items-center justify-center" />
-        Enviar a Supabase
-      </Button>
+      {/* Botón para enviar a Supabase */}
+      {uploadedFiles.length > 0 && (
+        <div className="flex justify-center">
+          <Button
+            variant="default"
+            className="bg-green-600 hover:bg-green-700 text-white px-8 py-2"
+            onClick={(e) => {
+              e.stopPropagation();
+              SendToSupabase();
+            }}
+            disabled={isUploading || uploadedFiles.filter(f => f.prediction).length === 0}
+          >
+            {isUploading ? (
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            ) : (
+              <Upload className="w-4 h-4 mr-2" />
+            )}
+            {isUploading ? "Guardando..." : "Guardar en Base de Datos"}
+          </Button>
+        </div>
+      )}
 
       {/* Uploaded Files Preview */}
       {uploadedFiles.length > 0 && (

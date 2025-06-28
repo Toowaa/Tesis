@@ -306,15 +306,9 @@ export default function Historial({ user}: HistorialProps) {
                   >
                     <div className="flex items-center space-x-4">
                       <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg flex items-center justify-center overflow-hidden">
-                        {producto.imagen_url ? (
-                          <img 
-                            src={producto.imagen_url} 
-                            alt={producto.nombre}
-                            className="w-full h-full object-cover rounded-lg"
-                          />
-                        ) : (
+                       
                           <Package className="w-6 h-6 text-blue-600" />
-                        )}
+                        
                       </div>
                       <div>
                         <p className="font-medium text-gray-900">{producto.nombre}</p>
