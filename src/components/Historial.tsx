@@ -5,7 +5,7 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, DollarSign, Package, TrendingUp, Filter, CalendarDays } from "lucide-react"
+import { Calendar, DollarSign, Package, TrendingUp,  CalendarDays } from "lucide-react"
 
 interface HistorialProps {
     user?: any

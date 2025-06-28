@@ -11,7 +11,7 @@ import {
   Loader2,
   AlertCircle,
   DollarSign,
-  TrendingUp,
+
   Recycle,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";

@@ -1,20 +1,15 @@
 "use client"
 
-import { useState } from "react"
+
 import { Button } from "@/components/ui/Button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
+import { Card, CardContent } from "@/components/ui/Card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/Separator"
 import {
-  User,
-  Settings,
-  Bell,
-  Palette,
-  Shield,
-  HelpCircle,
+
   LogOut,
   Camera,
-  Edit,
+
   Crown,    
   Calendar,
   Activity,

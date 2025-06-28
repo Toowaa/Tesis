@@ -7,7 +7,7 @@ import {
   Home,
   Upload,
   ImageIcon,
-  Settings,
+
   User,
   ChevronLeft,
   ChevronRight,
