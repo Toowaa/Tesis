@@ -39,6 +39,7 @@ export default function Historial({ user}: HistorialProps) {
     promedioVenta: 0
   })
 
+  console.log('HOLIWI', user)
   // Función para obtener productos del usuario
   const obtenerProductos = async (filtroFecha?: string) => {
     try {
